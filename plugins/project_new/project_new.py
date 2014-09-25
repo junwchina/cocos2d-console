@@ -455,11 +455,9 @@ class TPCreator(object):
         #begin copy plugin-x
         cocos.Logging.info("> Copying plugin-x files...")
 
-        cocos.Logging.info(" src = " + src)
-        cocos.Logging.info(" dst = " + dst)
         if os.path.exists(dst):
             shutil.rmtree(dst)
-        shutil.copytree(src, dst)
+        shutil.copytree(src, dst, symlinks=True)
 
 
     def append_from_template(self, v):
