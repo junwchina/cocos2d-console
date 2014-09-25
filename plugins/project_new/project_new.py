@@ -98,7 +98,7 @@ class CCPluginNew(cocos.CCPlugin):
 
         if args.name is None:
             args.name = CCPluginNew.DEFAULT_PROJ_NAME[args.language]
-        
+
         if not args.package:
             args.package = "org.cocos2dx.%s" % args.name
 
@@ -159,20 +159,20 @@ class CCPluginNew(cocos.CCPlugin):
     def _parse_cfg(self, language):
         script_dir= unicode(os.path.abspath(os.path.dirname(__file__)), "utf-8")
         create_cfg_file = os.path.join(script_dir, "env.json")
-        
+
         f = open(create_cfg_file)
         create_cfg = json.load(f)
         f.close()
         langcfg = create_cfg[language]
         langcfg['COCOS_ROOT'] = os.path.abspath(os.path.join(script_dir,langcfg["COCOS_ROOT"]))
         cocos_root = langcfg['COCOS_ROOT']
-        
+
         # replace SDK_ROOT to real path
         for k, v in langcfg.iteritems():
             if 'COCOS_ROOT' in v:
                 v = v.replace('COCOS_ROOT', cocos_root)
                 langcfg[k] = v
-        
+
         #get the real json cfgs
         templates_root = langcfg['templates_root']
 
@@ -328,7 +328,7 @@ class TPCreator(object):
         exclude_files.append(self.tp_json)
         self.cp_self(self.project_dir, exclude_files)
         self.do_cmds(default_cmds)
-    
+
     def do_other_step(self, step):
         if not self.tp_other_step.has_key(step):
             message = "Fatal: creating step '%s' is not found" % step
@@ -366,7 +366,7 @@ class TPCreator(object):
         f = open(moudle_cfg)
         data = json.load(f, 'utf8')
         f.close()
-        modules = data['module'] 
+        modules = data['module']
 
         # must copy moduleConfig.json & CCBoot.js
         file_list = [moduleConfig, data['bootFile']]
@@ -441,6 +441,25 @@ class TPCreator(object):
                     if os.path.exists(dstfile):
                         os.remove(dstfile)
                     shutil.copy2(srcfile, dstfile)
+
+
+    def setup_pluginx(self, v):
+        src = os.path.join(self.cocos_root, v['from'])
+        dst = os.path.join(self.project_dir, v['to'])
+
+        # check plugin-x exist
+        if not os.path.exists(src):
+            message = "Fatal: %s doesn\'t exist." % src
+            raise cocos.CCPluginError(message)
+
+        #begin copy plugin-x
+        cocos.Logging.info("> Copying plugin-x files...")
+
+        cocos.Logging.info(" src = " + src)
+        cocos.Logging.info(" dst = " + dst)
+        if os.path.exists(dst):
+            shutil.rmtree(dst)
+        shutil.copytree(src, dst)
 
 
     def append_from_template(self, v):
