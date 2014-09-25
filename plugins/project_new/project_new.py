@@ -459,6 +459,10 @@ class TPCreator(object):
             shutil.rmtree(dst)
         shutil.copytree(src, dst, symlinks=True)
 
+        os.remove(os.path.join(dst, ".git"))
+        os.remove(os.path.join(dst, ".gitmodules"))
+        os.remove(os.path.join(dst, "tools/xcodemodifier/.git"))
+
 
     def append_from_template(self, v):
         cocos.Logging.info('> Copying files from template directory...')
